@@ -97,6 +97,52 @@ r2_df <- data.frame(Variable = names(r2_results), R2 = r2_results)
 
 print(r2_df)
 
+#######################
+## Revisar Supuestos ##
+#######################
+
+#ES SUPER NORMAL
+hist(residuals(mod6), main = "Histograma de residuos", xlab = "Residuos")
+
+# VARIANZA CTE?? DISPERSION UNIFORME
+plot(fitted(mod6), residuals(mod6),
+     xlab = "Valores ajustados",
+     ylab = "Residuos",
+     main = "Residuos vs valores ajustados")
+abline(h = 0, col = "red")
+
+par(mfrow = c(2,2))
+plot(mod6)
+
+###########################
+## Evaluar Entrenamiento ##
+###########################
+
+y_true <- train$bikers
+y_pred <- predict(mod6, newdata = train)
+r2  <- summary(mod6)$r.squared
+r2_adj <- summary(mod6)$adj.r.squared
+
+# MSE (Mean Squared Error)
+mse <- mean((y_true - y_pred)^2)
+
+# MAE (Mean Absolute Error)
+mae <- mean(abs(y_true - y_pred))
+
+# MAPE (Mean Absolute Percentage Error)
+mape <- mean(abs((y_true - y_pred) / y_true)) * 100
+
+# Guardar resultados en un data.frame
+results <- data.frame(
+  R2 = r2,
+  R2_Ajustado = r2_adj,
+  MSE = mse,
+  MAE = mae,
+  MAPE = mape
+)
+
+print(results)
+
 ################
 ## Predicción ##
 ################
